@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Elections 2024</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-image: url(/img/list.jpg);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .check {
+            position: fixed;
+            background-image: url(/img/check.png);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            visibility: hidden;
+        }
+
+        #button {
+            position: fixed;
+            align-items: center;
+            appearance: none;
+            background-color: #FCFCFD;
+            border-radius: 4px;
+            border-width: 0;
+            box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            box-sizing: border-box;
+            color: #36395A;
+            cursor: pointer;
+            display: inline-flex;
+            font-family: "JetBrains Mono", monospace;
+            height: 48px;
+            justify-content: center;
+            line-height: 1;
+            list-style: none;
+            overflow: hidden;
+            padding-left: 16px;
+            padding-right: 16px;
+            text-align: left;
+            text-decoration: none;
+            transition: box-shadow .15s, transform .15s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            will-change: box-shadow, transform;
+            font-size: 18px;
+        }
+
+        #button:focus {
+            box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+        }
+
+        #button:hover {
+            box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            transform: translateY(-2px);
+        }
+
+        #button:active {
+            box-shadow: #D6D6E7 0 3px 7px inset;
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+<div id="dove_one_cow" class="check"></div>
+<div id="horny_tone_off" class="check"></div>
+<div id="slut_sky" class="check"></div>
+<button id="button">Довериться бездушной машине</button>
+<script>
+    const BOXES_X = 1172
+    const BOXES_YS = [580, 1125, 1400]
+    const LIST_W = 1446
+    const LIST_H = 1572
+    const CHECK_SIZE = 50
+
+    const BUTTON_X_OFFSET = 320
+    const BUTTON_Y = 300
+    const BUTTON_HEIGHT = 100
+
+    const FONT_SIZE = 50
+
+    const BUTTON_WIDTH = 900
+
+    const boxes = [
+        document.getElementById("dove_one_cow"),
+        document.getElementById("slut_sky"),
+        document.getElementById("horny_tone_off")
+    ]
+
+    const button = document.getElementById("button")
+
+    function updateSize() {
+        let h = window.innerHeight
+        let w = window.innerWidth
+        let scale = Math.min(h / LIST_H, w / LIST_W)
+        let offsetX = (w - scale * LIST_W) / 2
+        let offsetY = (h - scale * LIST_H) / 2
+        let checkX = offsetX + scale * BOXES_X
+
+        for (let i = 0; i < boxes.length; i++) {
+            let checkY = offsetY + scale * BOXES_YS[i]
+            let checkSize = scale * CHECK_SIZE
+
+            boxes[i].style.marginLeft = checkX.toString() + 'px'
+            boxes[i].style.marginTop = checkY.toString() + 'px'
+            boxes[i].style.width = checkSize.toString() + 'px'
+            boxes[i].style.height = checkSize.toString() + 'px'
+        }
+
+        let buttonX = offsetX + BUTTON_X_OFFSET * scale
+        let buttonY = offsetY + BUTTON_Y * scale
+        let buttonW = BUTTON_WIDTH * scale
+        let buttonH = BUTTON_HEIGHT * scale
+        let fontSize = Math.floor(FONT_SIZE * scale)
+
+        button.style.marginLeft = buttonX.toString() + 'px'
+        button.style.marginTop = buttonY.toString() + 'px'
+        button.style.width = buttonW.toString() + 'px'
+        button.style.height = buttonH.toString() + 'px'
+        button.style.fontSize = fontSize.toString() + 'px'
+    }
+
+    window.addEventListener("resize", updateSize)
+    window.onload = updateSize
+
+    const CHOICES = [
+        [true, false, false],
+        [false, true, false],
+        [false, false, true],
+        [true, true, false],
+        [true, false, true],
+        [false, true, true],
+        [true, true, true],
+    ]
+
+    const INVISIBLE = [false, false, false]
+
+    function setVisibility(choices) {
+        for (let i = 0; i < boxes.length; i++) {
+            boxes[i].style.visibility = choices[i] ? 'visible' : 'hidden'
+        }
+    }
+
+    function makeChoice() {
+        let i = Math.floor(Date.now() / 10) % 16
+        console.log(i)
+        if (i < 12) {
+            i = Math.floor(i / 4)
+        } else {
+            i = 3 + (i - 12)
+        }
+        return i
+    }
+
+    const START_PERIOD = 30
+    const PERIOD_MULTIPLIER = 1.1
+    const MAX_PERIOD = 200
+
+    const CONFIRM_ANIMATION_DELAY = 150
+    const CONFIRM_ANIMATION_COUNT = 5
+
+    let rollRunId = null
+    let confirmRunId = null
+
+    function startRoll(choiceI) {
+        let i = Math.floor(Math.random() * 16)
+        let period = START_PERIOD
+
+        function next() {
+            i = (i + 1) % CHOICES.length
+            setVisibility(CHOICES[i])
+            period = Math.floor(period * PERIOD_MULTIPLIER)
+            if (period < MAX_PERIOD || i !== choiceI) {
+                rollRunId = setTimeout(next, period)
+            } else {
+                confirmAnimation(choiceI)
+            }
+        }
+
+        next()
+    }
+
+    function confirmAnimation(choiceI) {
+        let count = CONFIRM_ANIMATION_COUNT
+
+        function next() {
+            if (count % 2 === 0) {
+                setVisibility(CHOICES[choiceI])
+            } else {
+                setVisibility(INVISIBLE)
+            }
+            if (count > 0) {
+                count -= 1
+                confirmRunId = setTimeout(next, CONFIRM_ANIMATION_DELAY)
+            }
+        }
+
+        next()
+    }
+
+    button.onclick = function () {
+        if (rollRunId != null) {
+            clearTimeout(rollRunId)
+        }
+        if (confirmRunId != null) {
+            clearTimeout(confirmRunId)
+        }
+        startRoll(makeChoice())
+    }
+    updateSize()
+</script>
+</body>
+</html>
